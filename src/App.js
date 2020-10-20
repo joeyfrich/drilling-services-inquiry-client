@@ -1,10 +1,17 @@
 import React from 'react';
+import InquiryForm from './InquiryForm';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
-      Welcome to the Drilling Services Inquiry Demo
+      <div className="ui container">
+        <div className="ui segments">
+          <div className="ui segment">
+            <InquiryForm/>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

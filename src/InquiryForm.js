@@ -1,33 +1,50 @@
 import React from 'react';
+import axios from 'axios';
 
 class InquiryForm extends React.Component {
   constructor(props) {
     super(props);
+    
     this.state = {
       firstName: ""
     };
+    
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChangeFirstName = this.handleChangeFirstName.bind(this)
+    this.handleChange = this.handleChange.bind(this)
   }
-  handleChangeFirstName(event) {
-    this.setState({ firstName: event.target.value })
+  handleChange(event) {
+    let setValue = event.target.value;
+    if (event.target.getAttribute("type") === "checkbox") setValue = event.target.checked;
+    
+    let newState = this.state;
+    newState[event.target.name] = setValue;
+    this.setState(newState);
   }
   handleSubmit(event) {
     event.preventDefault();
-    console.log("submit form...");
-    console.log(this.state);
     
-    console.log("api url", process.env.REACT_APP_API_URL);
+    let formVals = this.state;
+    formVals["_token"] = this.props.csrfToken;
+    
+    console.log('formVals', formVals);
+    
+    axios.post(process.env.REACT_APP_API_URL+"/api/new_inquiry", formVals)
+    .then(inquiryResponse => {
+      console.log(inquiryResponse);
+    });
   }
   render() {
     let renderedOfferedServices = [];
     
     for (let offeredService of this.props.offeredServices) {
+      let inputName = "offered_service_"+offeredService.offered_service_id;
       renderedOfferedServices.push(
         <div key={offeredService.offered_service_id}>
           <div className="ui checkbox">
-            <input type="checkbox" name={offeredService.offered_service_short} id={offeredService.offered_service_short} />
-            <label htmlFor={offeredService.offered_service_short}>{offeredService.offered_service}</label>
+            <input type="checkbox" name={inputName} id={inputName} onChange={this.handleChange} />
+            <label htmlFor={inputName}>
+              {offeredService.offered_service}
+            </label>
           </div>
           <br/>
         </div>
@@ -42,7 +59,7 @@ class InquiryForm extends React.Component {
         
         <div className="field">
           <label>Please enter your name:</label>
-          <input type="text" name="firstName" placeholder="First name" value={this.state.username} onChange={this.handleChangeFirstName} />
+          <input type="text" name="firstName" placeholder="First name" value={this.state.firstName} onChange={this.handleChange} />
         </div>
         
         <p>Which of the following services are you interested in?</p>

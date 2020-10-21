@@ -5,16 +5,18 @@ import axios from 'axios';
 
 class App extends React.Component {
   state = {
-    "session_key": "",
-    "offered_services": []
+    "sessionKey": "",
+    "csrfToken": "",
+    "offeredServices": []
   }
   
   fetchSession() {
-    axios.get(process.env.REACT_APP_API_URL+"/fetch_session")
-    .then(session_response => {
+    axios.get(process.env.REACT_APP_API_URL+"/api/fetch_session")
+    .then(sessionResponse => {
       this.setState({
-        session_key: session_response.data.session_key,
-        offered_services: session_response.data.offered_services
+        sessionKey: sessionResponse.data.sessionKey,
+        csrfToken: sessionResponse.data.csrfToken,
+        offeredServices: sessionResponse.data.offeredServices
       });
     });
   }
@@ -29,7 +31,7 @@ class App extends React.Component {
         <div className="ui container">
           <div className="ui segments">
             <div className="ui segment">
-              <InquiryForm offeredServices={this.state.offered_services}/>
+              <InquiryForm offeredServices={this.state.offeredServices} csrfToken={this.state.csrfToken} />
             </div>
           </div>
         </div>

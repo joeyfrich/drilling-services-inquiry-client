@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 
 class InquiryForm extends React.Component {
   constructor(props) {
@@ -19,20 +18,38 @@ class InquiryForm extends React.Component {
     console.log(this.state);
     
     console.log("api url", process.env.REACT_APP_API_URL);
-    
-    axios.get(`https://jsonplaceholder.typicode.com/users`)
-      .then(res => {
-        console.log("completed api request");
-      })
   }
   render() {
+    let renderedOfferedServices = [];
+    
+    for (let offeredService of this.props.offeredServices) {
+      renderedOfferedServices.push(
+        <div key={offeredService.offered_service_id}>
+          <div className="ui checkbox">
+            <input type="checkbox" name={offeredService.offered_service_short} id={offeredService.offered_service_short} />
+            <label htmlFor={offeredService.offered_service_short}>{offeredService.offered_service}</label>
+          </div>
+          <br/>
+        </div>
+      );
+    }
+    
     return (
       <form onSubmit={this.handleSubmit} className="ui form">
-        Welcome to the Drilling Services Inquiry Demo. To inquire about our services, please fill out the form below.<br/>
+        <div className="field">
+          Welcome to the Drilling Services Inquiry Demo. To inquire about our services, please fill out the form below.<br/>
+        </div>
+        
         <div className="field">
           <label>Please enter your name:</label>
           <input type="text" name="firstName" placeholder="First name" value={this.state.username} onChange={this.handleChangeFirstName} />
         </div>
+        
+        <p>Which of the following services are you interested in?</p>
+
+        {renderedOfferedServices}
+        
+        <br/>
         <button className="ui primary button">Submit Inquiry</button>
       </form>
     );

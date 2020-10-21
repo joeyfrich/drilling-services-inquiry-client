@@ -12,6 +12,7 @@ class InquiryForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this)
   }
+  
   handleChange(event) {
     let setValue = event.target.value;
     if (event.target.getAttribute("type") === "checkbox") setValue = event.target.checked;
@@ -20,19 +21,19 @@ class InquiryForm extends React.Component {
     newState[event.target.name] = setValue;
     this.setState(newState);
   }
+  
   handleSubmit(event) {
     event.preventDefault();
     
     let formVals = this.state;
     formVals["_token"] = this.props.csrfToken;
     
-    console.log('formVals', formVals);
-    
     axios.post(process.env.REACT_APP_API_URL+"/api/new_inquiry", formVals)
     .then(inquiryResponse => {
-      console.log(inquiryResponse);
+      this.props.inquiryFormSubmitted(inquiryResponse.data);
     });
   }
+  
   render() {
     let renderedOfferedServices = [];
     
